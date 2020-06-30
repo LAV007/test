@@ -2,6 +2,9 @@ package ru.russianpost;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 
 /**
  * Класс предназначен для ..
@@ -15,12 +18,23 @@ public class TestWebsite extends WebDriverSettings {
      */
     @Test
     public void firstTest() {
-        driver.get("https://google.com/"); //открываю страницу Гугл поиска
-        //Проверка соответствия title
+        //Открыть страницу Гугл поиска (https://www.google.com)
+        driver.get("https://google.com/");
+
+        //Проверка соответствия title (Страница открыта)
         String title = driver.getTitle();
         Assert.assertTrue(title.equals("Google"));
 
+        //В поисковике ввести яндекс маркет
+        driver.findElement(By.name("q")).sendKeys("яндекс маркет");
+        driver.findElement(By.name("btnK")).click();
 
+        //Проверить что первая страница в поиске ссылается на яндекс маркет
+        String yandexMarket = driver.findElement(By.cssSelector("cite")).getText();
+        Assert.assertTrue(yandexMarket.equals("market.yandex.ru"));
+
+        //Перейти по ссылке --> Откроется  яндекс маркет
+        driver.get("https://" + yandexMarket + "/");
     }
 
     /**
@@ -33,6 +47,30 @@ public class TestWebsite extends WebDriverSettings {
      */
     @Test
     public void secondTest() {
+        //Открыть страницу яндекс маркет (https://market.yandex.ru/)
+        driver.get("https://market.yandex.ru/");
+
+        //Проверка соответствия title (Страница открыта)
+        String title = driver.getTitle();
+        Assert.assertTrue(title.equals("Яндекс.Маркет — выбор и покупка товаров из проверенных интернет-магазинов"));
+
+        //В поисковике ввести пылесосы
+        WebElement search = driver.findElement(By.id("header-search"));
+        search.sendKeys("пылесосы");
+        //произойдет переход на страницу с пылесосами
+        search.sendKeys(Keys.ENTER);
+        //Кнопки ВСЕ ФИЛЬТРЫ на данном этапе нет, выбираю полностью всю категорию товаров пылесосы
+        driver.findElement(By.className("_3nuwI0jgrK")).click();
+
+        //Установить  цену в поле  до = 6000
+        WebElement price = driver.findElement(By.id("glpriceto"));
+        price.sendKeys("6000");
+        price.sendKeys(Keys.ENTER);
+
+        //Выполнить нажатие на кнопку Все фильтры
+        WebElement allFilter = driver.findElement(By.id("search-prepack"));
+        allFilter.findElement(By.className("_14Uuc5WvKg")).click();
+
 
     }
 }
